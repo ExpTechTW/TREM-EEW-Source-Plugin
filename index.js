@@ -7,11 +7,9 @@ class Plugin {
       JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
     this.supportSource = [
       { value: "trem", text: "TREM (僅套用在重播)" },
-      { value: "cwa", text: "中央氣象署 (CWA)" },
       { value: "nied", text: "防災科研 (NIED)" },
       { value: "kma", text: "韓國氣象廳 (KMA)" },
       { value: "scdzj", text: "四川省地震局 (SCDZJ)" },
-      { value: "fjdzj", text: "福建省地震局 (FJDZJ)" },
     ];
   }
 
