@@ -20,6 +20,7 @@ class Plugin {
       const eewSource =
         JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
       TREM.constant.EEW_AUTHOR = eewSource;
+      TREM.constant.SHOW_TREM_EEW = true;
       window.this_constant = TREM.constant.EEW_AUTHOR;
       logger.info(
         "Earthquake early warning source change success!",
