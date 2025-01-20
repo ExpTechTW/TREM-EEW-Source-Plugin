@@ -3,6 +3,11 @@ class Plugin {
 
   constructor(ctx) {
     this.#ctx = ctx;
+    const storedData = JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
+    if (!storedData.includes("cwa")) {
+      storedData.push("cwa");
+      localStorage.setItem("eew-source-plugin", JSON.stringify(storedData));
+    }
     this.eewSource =
       JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
     this.supportSource = [
@@ -85,6 +90,10 @@ class Plugin {
           const key = inputElement.id.split(".")[0];
           if (!TREM.constant.EEW_AUTHOR) {
             TREM.constant.EEW_AUTHOR = [];
+          }
+          if (key === "cwa") {
+            inputElement.checked = true;
+            return;
           }
           if (!inputElement.checked) {
             if (!TREM.constant.EEW_AUTHOR.includes(key)) {
