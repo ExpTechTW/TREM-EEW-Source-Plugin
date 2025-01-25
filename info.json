@@ -1,15 +1,23 @@
 {
   "name": "eew-source",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "description": {
     "zh_tw": "TREM-Lite EEW Source Plugin",
     "zh-Hant": "TREM-Lite 地震速報來源擴充套件"
   },
-  "loader": ["setting", "index"],
-  "author": ["cstrikeasia"],
+  "loader": [
+    "setting",
+    "index"
+  ],
+  "author": [
+    "cstrikeasia",
+    "whes1015"
+  ],
   "dependencies": {
-    "trem": ">=3.1.0-rc.3"
+    "trem": ">=3.1.0"
   },
-  "resources": ["AGPL-3.0"],
+  "resources": [
+    "AGPL-3.0"
+  ],
   "link": "https://github.com/ExpTechTW/TREM-EEW-Source-Plugin"
 }
