@@ -3,11 +3,7 @@ class Plugin {
 
   constructor(ctx) {
     this.#ctx = ctx;
-    const storedData = JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
-    if (!storedData.includes("cwa")) {
-      storedData.push("cwa");
-      localStorage.setItem("eew-source-plugin", JSON.stringify(storedData));
-    }
+    this.logger = null;
     this.eewSource =
       JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
     this.supportSource = [
@@ -20,26 +16,26 @@ class Plugin {
 
   changeAuthor(TREM) {
     if (this.eewSource && this.eewSource.length > 0) {
-      const eewSource =
+      this.eewSource =
         JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
-      TREM.constant.EEW_AUTHOR = eewSource;
-      // if (eewSource.includes('trem')) {
-      //   TREM.constant.SHOW_TREM_EEW = true;
-      // }
-      window.this_constant = TREM.constant.EEW_AUTHOR;
-      logger.info(
+      TREM.constant.EEW_AUTHOR = this.eewSource;
+      if (this.eewSource.includes("trem"))
+        TREM.constant.SHOW_TREM_EEW = true;
+
+      this.logger.info(
         "Earthquake early warning source change success!",
-        this_constant
+        TREM.constant.EEW_AUTHOR,
       );
+
+      if (!TREM.constant.EEW_AUTHOR.includes("cwa") && !TREM.constant.EEW_AUTHOR.includes("trem")) TREM.constant.EEW_AUTHOR.push("cwa");
     }
   }
 
   init(TREM) {
     this.changeAuthor(TREM);
     window.addEventListener("storage", (event) => {
-      if (event.key === "eew-source-plugin" && event.newValue) {
+      if (event.key === "eew-source-plugin" && event.newValue)
         this.changeAuthor(TREM);
-      }
     });
 
     const settingButtons = document.querySelector(".setting-buttons");
@@ -61,7 +57,7 @@ class Plugin {
             <div class="slider round"></div>
           </label>
         </div>
-      `
+      `,
         )
         .join("");
 
@@ -83,31 +79,31 @@ class Plugin {
   }
 
   addCheckBoxEvent(TREM) {
-    document.addEventListener("click", async (e) => {
+    document.addEventListener("click", (e) => {
       if (e.target.classList.contains("slider")) {
         const inputElement = e.target.previousElementSibling;
         if (inputElement && inputElement.id.endsWith(".eew-source-plugin")) {
           const key = inputElement.id.split(".")[0];
-          if (!TREM.constant.EEW_AUTHOR) {
+          if (!TREM.constant.EEW_AUTHOR)
             TREM.constant.EEW_AUTHOR = [];
-          }
+
           if (key === "cwa") {
             inputElement.checked = true;
             return;
           }
           if (!inputElement.checked) {
-            if (!TREM.constant.EEW_AUTHOR.includes(key)) {
+            if (!TREM.constant.EEW_AUTHOR.includes(key))
               TREM.constant.EEW_AUTHOR.push(key);
-            }
+
           } else {
             const index = TREM.constant.EEW_AUTHOR.indexOf(key);
-            if (index !== -1) {
+            if (index !== -1)
               TREM.constant.EEW_AUTHOR.splice(index, 1);
-            }
+
           }
           localStorage.setItem(
             "eew-source-plugin",
-            JSON.stringify(TREM.constant.EEW_AUTHOR)
+            JSON.stringify(TREM.constant.EEW_AUTHOR),
           );
         }
       }
@@ -116,15 +112,15 @@ class Plugin {
 
   addClickEvent() {
     const settingOptionsPage = document.querySelectorAll(
-      ".setting-options-page"
+      ".setting-options-page",
     );
     const settingButtons = document.querySelectorAll(
-      ".setting-buttons .button"
+      ".setting-buttons .button",
     );
     const page = document.querySelector(".eew-source-page");
     const button = document.querySelector(".eew-source");
 
-    if (button) {
+    if (button)
       button.addEventListener("click", () => {
         settingOptionsPage.forEach((item) => {
           item.classList.remove("active");
@@ -136,32 +132,36 @@ class Plugin {
         });
         button.classList.add("on");
       });
-    }
+
   }
 
   initializeEEWAuthor(TREM) {
-    const storedData =
+    this.eewSource =
       JSON.parse(localStorage.getItem("eew-source-plugin")) || [];
-    if (!TREM.constant.EEW_AUTHOR) {
+    if (!TREM.constant.EEW_AUTHOR)
       TREM.constant.EEW_AUTHOR = [];
-    }
-    TREM.constant.EEW_AUTHOR = [...storedData];
-    for (const key of storedData) {
+
+    TREM.constant.EEW_AUTHOR = [...this.eewSource];
+    for (const key of this.eewSource) {
       const checkbox = document.getElementById(`${key}.eew-source-plugin`);
-      if (checkbox) {
+      if (checkbox)
         checkbox.checked = true;
-      }
     }
+
+    if (TREM.constant.EEW_AUTHOR.includes("trem")) TREM.constant.EEW_AUTHOR = TREM.constant.EEW_AUTHOR.filter(author => author != "cwa");
+    else if (!TREM.constant.EEW_AUTHOR.includes("cwa")) TREM.constant.EEW_AUTHOR.push("cwa");
   }
 
-  async onLoad() {
+  onLoad() {
     const { TREM, logger } = this.#ctx;
+
+    this.logger = logger;
 
     this.init(TREM);
     this.addClickEvent();
     this.addCheckBoxEvent(TREM);
     this.initializeEEWAuthor(TREM);
-    logger.info("Loading EEW Source plugin...");
+    this.logger.info("Loading EEW Source plugin...");
   }
 }
 
