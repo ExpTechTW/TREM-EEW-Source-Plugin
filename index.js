@@ -27,7 +27,8 @@ class Plugin {
         TREM.constant.EEW_AUTHOR,
       );
 
-      if (!TREM.constant.EEW_AUTHOR.includes("cwa") && !TREM.constant.EEW_AUTHOR.includes("trem")) TREM.constant.EEW_AUTHOR.push("cwa");
+      if (TREM.constant.EEW_AUTHOR.includes("trem")) TREM.constant.EEW_AUTHOR = TREM.constant.EEW_AUTHOR.filter(author => author != "cwa");
+      else if (!TREM.constant.EEW_AUTHOR.includes("cwa")) TREM.constant.EEW_AUTHOR.push("cwa");
     }
   }
 
